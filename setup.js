@@ -1,12 +1,3 @@
-/* global process */
-/*******************************************************************************
- * Copyright (c) 2015 IBM Corp.
- *
- * All rights reserved. 
- *
- * Contributors:
- *   David Huffman - Initial implementation
- *******************************************************************************/
 //Environments are either:
 // 	1 - Bluemix Production
 // 	2 - Bluemix Development
@@ -52,7 +43,7 @@ else if(process.env.VCAP_APP_HOST){
 else{
 	exports.SERVER = 	{
 							HOST:'localhost',
-							PORT: 3000,
+							PORT: 3001,
 							DESCRIPTION: 'Localhost',
 							EXTURI: process.env.EXTURI || 'localhost:3000',
 						 };

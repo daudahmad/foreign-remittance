@@ -15,8 +15,8 @@ export default class SubmitTx extends React.Component {
           </Grid.Column>
         </Grid.Row>
         <Grid.Row columns={3}>
-          <Grid.Column width={2} />
-          <Grid.Column width={5} >
+          <Grid.Column width={1} />
+          <Grid.Column width={6} >
             <Segment size='large' raised>
             <Form>
               <Form.Field>
@@ -49,7 +49,7 @@ export default class SubmitTx extends React.Component {
               <Form.Field>
                 <input placeholder='Details of Charges...' />
               </Form.Field>
-              <Button type='submit'>Generate Tx</Button>
+              {/*<Button type='submit'>Generate Tx</Button>*/}
               <Button type='submit'>Submit Tx</Button>
             </Form>
             </Segment>

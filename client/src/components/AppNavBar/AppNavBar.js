@@ -13,7 +13,7 @@ export default class AppNavBar extends Component {
 
     return (
       <Menu size='huge'>
-        <Menu.Item header>K2 BANK FOREIGN PAYMENTS SYSTEM</Menu.Item>
+        <Menu.Item header>ACME BANK FOREIGN PAYMENTS SYSTEM</Menu.Item>
         <Menu.Item
           name='Dashboard'
           active={activeItem === 'Dashboard'}

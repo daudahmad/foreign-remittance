@@ -1,21 +1,3 @@
-/*
-Copyright 2016 IBM
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Licensed Materials - Property of IBM
-© Copyright IBM Corp. 2016
-*/
 package main
 
 import (
@@ -27,9 +9,9 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
-const BANKA = "BANKA"
-const BANKB = "BANKB"
-const BANKC = "BANKC"
+const ACMEUSA = "ACME-USA"
+const ACMEAUS = "ACME-AUS"
+const ACMEGER = "ACME-GER"
 const AUDITOR = "AUDITOR"
 
 const AUDUSD = 0.74
@@ -87,17 +69,17 @@ type NVAccounts struct {
 // Init
  The Init function creates 3 financial institutions in the ledger:
  	- Financial institution 1
-		- Owner: BANKA (USD)
-			-	1. BANKB - 250000
-			- 2. BANKC - 360000
+		- Owner: ACME-USA (USD)
+			-	1. ACME-AUS - 250000
+			- 2. ACME-GER - 360000
  	- Financial institution 2
-		- Owner: BANKB (AUD)
-			-	1. BANKA - 250000 * 1.34 (USD to AUD exchange rate)
-			- 2. BANKC - 120000
+		- Owner: ACME-AUS (AUD)
+			-	1. ACME-USA - 250000 * 1.34 (USD to AUD exchange rate)
+			- 2. ACME-GER - 120000
  	- Financial institution 3
-  	- Owner: BANKC (EUR)
-			- 1. BANKA - 360000 * 0.9 (USR to EUR exchange rate)
-			- 2. BANKB - 120000 * 0.67 (AUD to EUR exchange rate)
+  	- Owner: ACME-GER (EUR)
+			- 1. ACME-USA - 360000 * 0.9 (USD to EUR exchange rate)
+			- 2. ACME-AUS - 120000 * 0.67 (AUD to EUR exchange rate)
 ============================================================================================================================*/
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 
@@ -105,15 +87,15 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 
 	// Financial Institution 1 and the owner is BANK A
 	var fid FinancialInst
-	fid.Owner = BANKA
+	fid.Owner = ACMEUSA
 
 	var actAB Account
-	actAB.Holder = BANKB
+	actAB.Holder = ACMEAUS
 	actAB.Currency = "USD"
 	actAB.CashBalance = 250000.00
 	fid.Accounts = append(fid.Accounts, actAB)
 	var actAC Account
-	actAC.Holder = BANKC
+	actAC.Holder = ACMEGER
 	actAC.Currency = "USD"
 	actAC.CashBalance = 360000.00
 	fid.Accounts = append(fid.Accounts, actAC)
@@ -121,53 +103,53 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	// Convert Financial Institution struct to json using the Marshal function
 	jsonAsBytes, _ := json.Marshal(fid)
 	// Now store this in the world state
-	err = stub.PutState("BANKA", jsonAsBytes)
+	err = stub.PutState("ACME-USA", jsonAsBytes)
 	if err != nil {
-		fmt.Println("Error creating account " + BANKA)
+		fmt.Println("Error creating account " + ACMEUSA)
 		return nil, err
 	}
 
 	// Financial Institution 2 and the owner is BANK B
 	var fid2 FinancialInst
-	fid2.Owner = BANKB
+	fid2.Owner = ACMEAUS
 
 	var actBA Account
-	actBA.Holder = BANKA
+	actBA.Holder = ACMEUSA
 	actBA.Currency = "AUD"
 	actBA.CashBalance = actAB.CashBalance * USDAUD
 	fid2.Accounts = append(fid2.Accounts, actBA)
 	var actBC Account
-	actBC.Holder = BANKC
+	actBC.Holder = ACMEGER
 	actBC.Currency = "AUD"
 	actBC.CashBalance = 120000.00
 	fid2.Accounts = append(fid2.Accounts, actBC)
 
 	jsonAsBytes, _ = json.Marshal(fid2)
-	err = stub.PutState("BANKB", jsonAsBytes)
+	err = stub.PutState("ACME-AUS", jsonAsBytes)
 	if err != nil {
-		fmt.Println("Error creating account " + BANKB)
+		fmt.Println("Error creating account " + ACMEAUS)
 		return nil, err
 	}
 
 	// Financial Institution 3 and the owner is BANK C
 	var fid3 FinancialInst
-	fid3.Owner = BANKC
+	fid3.Owner = ACMEGER
 
 	var actCA Account
-	actCA.Holder = BANKA
+	actCA.Holder = ACMEUSA
 	actCA.Currency = "EUR"
 	actCA.CashBalance = actAC.CashBalance * USDEUR
 	fid3.Accounts = append(fid3.Accounts, actCA)
 	var actCB Account
-	actCB.Holder = BANKB
+	actCB.Holder = ACMEAUS
 	actCB.Currency = "EUR"
 	actCB.CashBalance = actBC.CashBalance * AUDEUR
 	fid3.Accounts = append(fid3.Accounts, actCB)
 
 	jsonAsBytes, _ = json.Marshal(fid3)
-	err = stub.PutState("BANKC", jsonAsBytes)
+	err = stub.PutState("ACME-GER", jsonAsBytes)
 	if err != nil {
-		fmt.Println("Error creating account " + BANKC)
+		fmt.Println("Error creating account " + ACMEGER)
 		return nil, err
 	}
 
@@ -492,15 +474,15 @@ func (t *SimpleChaincode) createFinancialInstitution(stub shim.ChaincodeStubInte
 
 	// Financial Institution 3 and the owner is BANK C
 	var fid3 FinancialInst
-	fid3.Owner = BANKC
+	fid3.Owner = ACMEGER
 
 	var actCA Account
-	actCA.Holder = BANKA
+	actCA.Holder = ACMEUSA
 	actCA.Currency = "EUR"
 	actCA.CashBalance = 20000 * USDEUR
 	fid3.Accounts = append(fid3.Accounts, actCA)
 	var actCB Account
-	actCB.Holder = BANKB
+	actCB.Holder = ACMEAUS
 	actCB.Currency = "EUR"
 	actCB.CashBalance = 30000 * AUDEUR
 	fid3.Accounts = append(fid3.Accounts, actCB)

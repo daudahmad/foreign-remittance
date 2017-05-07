@@ -460,7 +460,8 @@ func (t *SimpleChaincode) submitTransaction(stub shim.ChaincodeStubInterface, ar
 	fmt.Println("submitTransaction Commit Transaction To Ledger")
 	var txs AllTransactions
 	json.Unmarshal(allTxAsBytes, &txs)
-	txs.Transactions = append(txs.Transactions, tx)
+	// txs.Transactions = append(txs.Transactions, tx)
+	txs.Transactions = append([]Transaction{tx}, txs.Transactions...)
 	txsAsBytes, _ := json.Marshal(txs)
 	err = stub.PutState("allTx", txsAsBytes)
 	if err != nil {
